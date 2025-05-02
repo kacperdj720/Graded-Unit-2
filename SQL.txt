@@ -1,0 +1,48 @@
+CREATE TABLE card (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    cardnumber VARCHAR(20) DEFAULT NULL,
+    exp VARCHAR(10) DEFAULT NULL,
+    code VARCHAR(5) DEFAULT NULL,
+    email VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE certifications (
+    level VARCHAR(20) NOT NULL,
+    image_filename VARCHAR(100) NOT NULL,
+    PRIMARY KEY (level)
+);
+
+CREATE TABLE feedback (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE new_users (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    company VARCHAR(255) NOT NULL,
+    contact VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Active',
+    admin INT(11) DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    certificate ENUM('Bronze', 'Silver', 'Gold') DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (email)
+);
+
+CREATE TABLE questions (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    question TEXT,
+    title VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
+CREATE DATABASE college_db;
+
