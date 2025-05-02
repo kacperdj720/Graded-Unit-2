@@ -1,0 +1,37 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    require('connect_db.php');
+    require('login_tools.php');
+
+    $email = mysqli_real_escape_string($link, $_POST['email']);
+    $password = $_POST['password'];
+
+    $query = "SELECT * FROM new_users WHERE email = '$email'";
+    $result = mysqli_query($link, $query);
+
+    if (mysqli_num_rows($result) == 1) {
+        $user = mysqli_fetch_assoc($result);
+
+        if (password_verify($password, $user['password'])) {
+            session_start();
+            $_SESSION['created_at'] = $user['created_at'];
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['company'] = $user['company'];
+            $_SESSION['email'] = $user['email'];
+
+            load('home.php');
+        } else {
+            $errors = ['Invalid email or password.'];
+        }
+    } else {
+        $errors = ['Invalid email or password.'];
+    }
+
+    mysqli_close($link);
+}
+
+if (!empty($errors)) {
+    include('login.php');
+}
+?>
