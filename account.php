@@ -1,6 +1,7 @@
 <?php 
 include 'includes/nav.php';
 
+#redirect to login if the user isnt logged in
 if (!isset($_SESSION['id'])) 
 {
     require('login_tools.php');
@@ -14,15 +15,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     if (isset($_POST['setup_billing']))
 		{
         $uid = (int)$_SESSION['id'];
+		#gets user email from database
         $get_user = "SELECT email FROM new_users WHERE id = $uid";
         $user_result = mysqli_query($link, $get_user);
         $user_data = mysqli_fetch_assoc($user_result);
         $email = $user_data['email'];
-
+        # check if card details exist for user
         $card_check = "SELECT * FROM card WHERE email = '$email'";
         $card_result = mysqli_query($link, $card_check);
         $card_info = mysqli_fetch_assoc($card_result);
-
+        #if card code exists activite account
         if (!empty($card_info['code'])) 
 		{
             $update_status = "UPDATE new_users SET status = 'active' WHERE id = $uid";
@@ -31,20 +33,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     }
 	else 
 	{
+		#update card detials submitted by user
         $user_id = mysqli_real_escape_string($link, $_POST['user_id']);
         $card_number = mysqli_real_escape_string($link, $_POST['card_number']);
         $expiration_date = mysqli_real_escape_string($link, $_POST['expiration_date']);
         $last_three_digits = mysqli_real_escape_string($link, $_POST['last_three_digits']);
-        
+        #update card info in database
         $update_query = "UPDATE card SET cardnumber = '$card_number', exp = '$expiration_date', code = '$last_three_digits' 
                         WHERE email = (SELECT email FROM new_users WHERE id = " . (int)$user_id . ")";
         mysqli_query($link, $update_query);
     }
 }
-
+#fetch current user info
 $q = "SELECT * FROM new_users WHERE id=" . (int)$_SESSION['id'];
 $r = mysqli_query($link, $q);
-
+#display user info
 if (mysqli_num_rows($r) > 0) 
 {
     while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) 
@@ -71,7 +74,7 @@ if (mysqli_num_rows($r) > 0)
                 <li class="list-group-item">User ID: EC2024/' . (int)$row['id'] . '</li>
                 <li class="list-group-item">Email: ' . htmlspecialchars($row['email']) . '</li>
                 <li class="list-group-item">Registration Date: ' . $day . '/' . $month . '/' . $year . '</li>';
-
+#show card details if available
         if ($card_data)
 			{
             echo '
@@ -83,7 +86,7 @@ if (mysqli_num_rows($r) > 0)
 		{
             echo '<li class="list-group-item">No card details found.</li>';
         }
-
+# button to delete account
         echo '
                 <li class="list-group-item text-center">
                     <form action="delete.php" method="POST">
@@ -109,7 +112,7 @@ if (mysqli_num_rows($r) > 0)
         </div>
         <div class="card flex-grow-1 m-2 p-3" style="max-width: 23%; min-width: 250px; height: 400px;">
             <h2>Green Certification</h2>';
-
+#
         if (!empty($certification)) 
 		{
             $certImage = strtolower($certification) . '.png';
@@ -123,7 +126,7 @@ if (mysqli_num_rows($r) > 0)
 		{
             echo '<p>No certification has been achieved yet.</p>';
         }
-
+// billing set up section
         echo '
         </div>
 

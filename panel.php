@@ -2,12 +2,6 @@
 include 'includes/nav.php';
 require('connect_db.php');
 
-// Redirect non-admin users
-if (!isset($_SESSION['id'])) {
-    header('Location: login.php');
-    exit();
-}
-
 $uid = $_SESSION['id'];
 $q = "SELECT admin FROM new_users WHERE id = '$uid' LIMIT 1";
 $r = mysqli_query($link, $q);
@@ -18,18 +12,22 @@ if ($row['admin'] != 1) {
     exit();
 }
 
-// Handle deletion request
+//handles deletion requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $delete_id = (int) $_POST['delete_id'];
-    if ($delete_id !== $uid) {  // Prevent admin from deleting themselves
+    if ($delete_id !== $uid) {  // Prevent the admin from deleting themselves
         $delete_q = "DELETE FROM new_users WHERE id = $delete_id LIMIT 1";
         mysqli_query($link, $delete_q);
     }
 }
 
-// Fetch all users
+//fetches all users
 $users_q = "SELECT id, company, email FROM new_users ORDER BY id ASC";
 $users_r = mysqli_query($link, $users_q);
+
+//fetches all feedback subbmissions
+$feedback_q = "SELECT id, name, email, message FROM feedback ORDER BY id DESC";
+$feedback_r = mysqli_query($link, $feedback_q);
 ?>
 
 <!DOCTYPE html>
@@ -69,13 +67,37 @@ $users_r = mysqli_query($link, $users_q);
             <?php endwhile; ?>
         </tbody>
     </table>
-    <a href="home.php" class="btn btn-secondary">Back to Home</a>
+
+    <h2 class="mb-4 mt-5">Feedback Submissions</h2>
+    <?php if (mysqli_num_rows($feedback_r) > 0): ?>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($feedback = mysqli_fetch_assoc($feedback_r)): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($feedback['name']); ?></td>
+                        <td><?php echo htmlspecialchars($feedback['email']); ?></td>
+                        <td><?php echo nl2br(htmlspecialchars($feedback['message'])); ?></td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No feedback submissions available.</p>
+    <?php endif; ?>
+    
+<a href="home.php" class="btn btn-secondary mt-3">Back to Home</a>
 </div>
 </body>
 </html>
 
-<?php mysqli_close($link); ?>
-
-<?php
+<?php 
+mysqli_close($link);
 include 'includes/footer.php';
 ?>

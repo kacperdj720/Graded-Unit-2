@@ -62,17 +62,19 @@
             <h1>Reset Password</h1>
 
             <?php
+			# handles submission form
             if ($_SERVER['REQUEST_METHOD'] == 'POST')
 				{
+					#requires database connection
                 require('connect_db.php');
-
+                #sanitises email and password inputs
                 $email = mysqli_real_escape_string($link, $_POST['email']);
                 $new_password = mysqli_real_escape_string($link, $_POST['new_password']);
                 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
+                 # checks if email exists
                 $check_query = "SELECT * FROM new_users WHERE email = '$email'";
                 $result = mysqli_query($link, $check_query);
-
+                # if the user exists update password
                 if (mysqli_num_rows($result) == 1)
 					{
                     $update_query = "UPDATE new_users SET password = '$hashed_password' WHERE email = '$email'";

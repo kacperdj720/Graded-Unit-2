@@ -1,5 +1,6 @@
 <?php
 session_start();
+#this starts the session
 ?>
 <html lang="en">
 <head>
@@ -15,8 +16,11 @@ session_start();
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="#">
-    <?php 
-      if (isset($_SESSION['company'])) {
+  
+    <?php
+	#  if the company is logged into the webstie this welcomes them by displaying their name
+      if (isset($_SESSION['company'])) 
+	  {
           echo 'Welcome to Sustain Energy! ' . htmlspecialchars($_SESSION['company']) . '!';
       } else {
           echo 'Welcome to Sustain Energy!';
@@ -37,7 +41,9 @@ session_start();
         <a class="nav-link" href="home.php">Home</a>
       </li>
 
-      <?php if (isset($_SESSION['id'])): ?>
+      <?php if (isset($_SESSION['id'])): 
+	  # this displays if the company is logged in as every page doesnt need to be displayed
+	  ?>
         <li class="nav-item">
           <a class="nav-link" href="information.php">Information</a>
         </li>
@@ -47,8 +53,15 @@ session_start();
         <li class="nav-item">
           <a class="nav-link" href="cred.php">Credentials</a>
         </li>
+		<li class="nav-item">
+          <a class="nav-link" href="terms.php">Terms n Condtion</a>
+        </li>
+		<li class="nav-item">
+          <a class="nav-link" href="privacy.php">Privacy Policy</a>
+        </li>
 
         <?php
+          #this sections displays if the company has active billing setup or if the user has admin permissions
           require('connect_db.php');
           $uid = $_SESSION['id'];
           $q = "SELECT status, admin FROM new_users WHERE id = '$uid' LIMIT 1";
@@ -61,7 +74,6 @@ session_start();
               echo '<li class="nav-item"><a class="nav-link" href="account.php">Green calculator</a></li>';
           }
 
-          // Show admin panel link if user is admin
           if ($row['admin'] == 1) {
               echo '<li class="nav-item"><a class="nav-link" href="panel.php">Admin Panel</a></li>';
           }
@@ -75,7 +87,8 @@ session_start();
         <li class="nav-item">
           <a class="nav-link" href="logout.php">Logout</a>
         </li>
-      <?php else: ?>
+      <?php else: 
+	  #if the user isnt logged in it displays these below?>
         <li class="nav-item">
           <a class="nav-link" href="login.php">Login</a>
         </li>

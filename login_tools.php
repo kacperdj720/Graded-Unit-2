@@ -1,4 +1,5 @@
 <?php
+
 function load($page = 'login.php') 
 {
     $url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
@@ -7,7 +8,7 @@ function load($page = 'login.php')
     header("Location: $url");
     exit();
 }
-
+#validates user login details
 function validate($link, $email = '', $pwd = '')
 {
   $errors = array();

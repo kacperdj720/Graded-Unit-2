@@ -1,5 +1,5 @@
 <?php 
-
+#logs out user and deletes current session
 session_start() ;
 
 $_SESSION = array() ;

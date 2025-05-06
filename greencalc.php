@@ -1,20 +1,23 @@
 <?php
 include 'includes/nav.php';
 include 'connect_db.php';
-
+#handles the form submission when the quiz is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $score = 0;
+	#loops through each question 
     for ($i = 1; $i <= 10; $i++) {
         if (isset($_POST["q$i"])) {
             $score += (int)$_POST["q$i"];
         }
     }
+	#saves toal quiz score
     $_SESSION['quiz_score'] = $score;
     header("Location: quizfinal.php");
     exit();
 }
 
 $questions = [];
+#fetches the questions from the database
 $query = "SELECT id, title, question FROM questions WHERE id BETWEEN 1 AND 10 ORDER BY id ASC";
 $result = mysqli_query($link, $query);
 
@@ -41,6 +44,7 @@ if ($result) {
 <body class="bg-light">
     <div class="container mt-5">
         <h1 class="mb-4">Green Calculator</h1>
+<p> By promoting green practices and rewarding transparency, companies earn recognition as Good Corporate Citizens—with all donations directed to environmental charities </p>
 
         <form method="POST">
             <?php for ($i = 1; $i <= 10; $i++): ?>
@@ -65,12 +69,15 @@ if ($result) {
                     </div>
                 <?php endif; ?>
             <?php endfor; ?>
-
+<br>
+</br>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
     </div>
+	<br>
+</br>
 </body>
 </html>
 

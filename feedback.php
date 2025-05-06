@@ -3,13 +3,15 @@ include 'includes/nav.php';
 include 'connect_db.php'; 
 
 $success = "";
+#check if the form is being submitted using post
 if ($_SERVER["REQUEST_METHOD"] == "POST") 
 {
     $name = mysqli_real_escape_string($link, $_POST['name']);
     $email = mysqli_real_escape_string($link, $_POST['email']);
     $message = mysqli_real_escape_string($link, $_POST['message']);
-
+    #insert feedback form into the database
     $sql = "INSERT INTO feedback (name, email, message) VALUES ('$name', '$email', '$message')";
+	#check if its been successful
     if (mysqli_query($link, $sql)) 
 	{
         $success = "Thank you for your feedback!";

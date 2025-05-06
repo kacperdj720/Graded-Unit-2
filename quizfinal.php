@@ -1,13 +1,15 @@
 <?php
 include 'includes/nav.php';
+#starts database connection
 require 'connect_db.php';
 
+#gets users quiz score and email from session
 $score = $_SESSION['quiz_score'] ?? null;
 $email = $_SESSION['email'] ?? null;
 $certificate = null;
 $purchase_message = null;
 
-
+#handles point purchase if user makes a transaction
 if (isset($_GET['purchase']) && is_numeric($_GET['purchase']) && $score !== null) 
 {
     $purchased_points = intval($_GET['purchase']);
@@ -16,6 +18,7 @@ if (isset($_GET['purchase']) && is_numeric($_GET['purchase']) && $score !== null
     $purchase_message = "Payment complete.";
 }
 
+#determines which certificate the user gained
 if ($score !== null && $email !== null)
 	{
     if ($score >= 70) {
@@ -25,7 +28,7 @@ if ($score !== null && $email !== null)
     } elseif ($score >= 50) {
         $certificate = 'Bronze';
     }
-
+#updates the certificate in database
     if ($certificate !== null) 
 	{
         try

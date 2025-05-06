@@ -1,14 +1,17 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') 
 {
+	#this connects to the database
     require('connect_db.php');
     $errors = array();
 
+    #this validates and santisizes the input fields
     $company = !empty($_POST['company']) ? mysqli_real_escape_string($link, trim($_POST['company'])) : $errors[] = 'Enter your company name.';
     $contact = !empty($_POST['contact']) ? mysqli_real_escape_string($link, trim($_POST['contact'])) : $errors[] = 'Enter your contact name.';
     $phone = !empty($_POST['phone']) ? mysqli_real_escape_string($link, trim($_POST['phone'])) : $errors[] = 'Enter your phone number.';
     $email = !empty($_POST['email']) ? mysqli_real_escape_string($link, trim($_POST['email'])) : $errors[] = 'Enter your email address.';
 
+    #checcks if the passwords match
     if (!empty($_POST['pass1']) && $_POST['pass1'] === $_POST['pass2']) 
     {
         $password = trim($_POST['pass1']);
@@ -18,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     {
         $errors[] = 'Passwords do not match or are empty.';
     }
-
+    #checks if email already exists
     if (empty($errors)) 
     {
         $q = "SELECT id FROM new_users WHERE email='$email'";
@@ -27,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             $errors[] = 'Email already registered. <a class="alert-link" href="login.php">Sign In Now</a>';
         }
     }
-
+    # if theres no erroes insert user into database
     if (empty($errors)) 
     {
         $created_at = date('Y-m-d H:i:s');
@@ -49,14 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             $errors[] = 'Registration failed. Please try again.';
         }
     }
-
+   #show erroes if there are any
     if (!empty($errors)) 
     {
         echo '<div class="container"><div class="alert alert-danger"><h4>Errors:</h4>';
         foreach ($errors as $msg) echo " - $msg<br>";
         echo '</div></div>';
     }
-
+    #closes database
     mysqli_close($link);
 }
 ?>
